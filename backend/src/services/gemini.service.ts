@@ -30,7 +30,7 @@ export interface EmailAnalysis {
 }
 
 // Validation function
-function isValidEmailAnalysis(obj: any): obj is EmailAnalysis {
+function isValidEmailAnalysis(obj: unknown): obj is EmailAnalysis {
   return (
     typeof obj === 'object' &&
     obj !== null &&
@@ -46,9 +46,9 @@ function isValidEmailAnalysis(obj: any): obj is EmailAnalysis {
 }
 
 // Extract JSON from potentially markdown-wrapped response
-function extractJSON(text: string): any {
+function extractJSON(text: string): unknown {
   // Remove markdown code blocks if present
-  let cleanText = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
+  const cleanText = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
   
   // Try to find JSON object
   const jsonMatch = cleanText.match(/\{[\s\S]*\}/)
