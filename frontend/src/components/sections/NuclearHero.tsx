@@ -41,33 +41,33 @@ export default function NuclearHero() {
       </div>
 
       {/* Main content */}
-      <div className="relative z-10 container mx-auto px-8 pt-32 pb-20">
+      <div className="relative z-10 container mx-auto px-6 md:px-8 pt-32 pb-20">
         {/* MASSIVE asymmetric headline */}
         <div className="max-w-7xl">
-          <h1 className="font-display text-massive md:text-nuclear leading-none tracking-crush">
+          <h1 className="font-display text-6xl sm:text-massive md:text-nuclear leading-none tracking-crush">
             <span className="block text-white">Your inbox</span>
             <span className="block text-white">is </span>
             <span className="block text-chaos">chaos</span>
           </h1>
           
-          <p className="mt-12 text-2xl md:text-4xl text-white/80 font-body max-w-2xl">
+          <p className="mt-8 md:mt-12 text-lg sm:text-2xl md:text-4xl text-white/80 font-body max-w-2xl">
             847 hours saved. Zero bullshit. Pure email domination.
           </p>
 
           {/* HUGE CTA button */}
           <a href="/auth">
-            <button className="mt-16 group relative cursor-pointer">
+            <button className="mt-12 md:mt-16 group relative cursor-pointer">
               <div className="absolute inset-0 bg-hotpink translate-x-2 translate-y-2 transition-transform group-hover:translate-x-1 group-hover:translate-y-1" />
-              <div className="relative bg-white px-12 py-8 text-2xl md:text-3xl font-display border-4 border-black transition-transform group-hover:scale-[1.02] group-active:scale-95">
+              <div className="relative bg-white px-8 py-6 md:px-12 md:py-8 text-xl md:text-2xl lg:text-3xl font-display border-4 border-black transition-transform group-hover:scale-[1.02] group-active:scale-95">
                 Fix my inbox now →
               </div>
             </button>
           </a>
         </div>
 
-        {/* Email mockup - breaking container */}
+        {/* Email mockup - breaking container (hidden on mobile) */}
         <div 
-          className="absolute right-0 top-1/4 w-[600px] rotate-3"
+          className="hidden lg:block absolute right-0 top-1/4 w-[600px] rotate-3"
           style={{ 
             transform: `translateY(${scrollY * 0.2}px) rotate(3deg)`,
             right: '-100px'
@@ -94,10 +94,10 @@ export default function NuclearHero() {
       </div>
 
       {/* Aggressive scroll indicator */}
-      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce">
+      <div className="absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 animate-bounce">
         <div className="text-white text-center">
-          <div className="text-6xl mb-2">↓</div>
-          <div className="text-xl font-display">SEE HOW IT WORKS</div>
+          <div className="text-4xl md:text-6xl mb-2">↓</div>
+          <div className="text-base md:text-xl font-display">SEE HOW IT WORKS</div>
         </div>
       </div>
     </div>

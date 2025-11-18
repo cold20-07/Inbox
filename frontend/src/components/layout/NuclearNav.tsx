@@ -36,15 +36,15 @@ export default function NuclearNav() {
       <nav 
         className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
           scrolled 
-            ? 'bg-white border-b-8 border-black shadow-thick animate-slam' 
+            ? 'bg-white border-b-4 md:border-b-8 border-black shadow-thick animate-slam' 
             : 'bg-transparent'
         }`}
       >
-        <div className="container mx-auto px-8 py-6 flex items-center justify-between">
+        <div className="container mx-auto px-4 md:px-8 py-4 md:py-6 flex items-center justify-between">
           {/* Logo */}
           <Link 
             to="/" 
-            className="text-3xl font-display group relative"
+            className="text-2xl md:text-3xl font-display group relative"
           >
             <span className={`${scrolled ? 'text-black' : 'text-white'} group-hover:animate-glitch`}>
               INBOX
@@ -57,7 +57,7 @@ export default function NuclearNav() {
           <Link to="/auth">
             <button className="group relative">
               <div className={`absolute inset-0 ${scrolled ? 'bg-hotpink' : 'bg-white'} translate-x-1 translate-y-1 transition-all group-hover:translate-x-0.5 group-hover:translate-y-0.5`} />
-              <div className={`relative ${scrolled ? 'bg-white text-black' : 'bg-black text-white'} px-6 py-3 text-lg font-display border-2 border-black transition-all group-hover:scale-105 group-active:scale-95`}>
+              <div className={`relative ${scrolled ? 'bg-white text-black' : 'bg-black text-white'} px-4 py-2 md:px-6 md:py-3 text-base md:text-lg font-display border-2 border-black transition-all group-hover:scale-105 group-active:scale-95`}>
                 Get Started
               </div>
             </button>
