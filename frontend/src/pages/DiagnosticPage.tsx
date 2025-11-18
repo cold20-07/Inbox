@@ -21,10 +21,12 @@ export default function DiagnosticPage() {
     setResults([])
     setLoading(true)
 
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+
     try {
       // Test 1: Backend connection
       addResult('Backend API', 'success', 'Testing connection...')
-      const response = await fetch('http://localhost:5000')
+      const response = await fetch(apiUrl)
       if (response.ok) {
         addResult('Backend API', 'success', 'Backend is running!')
       } else {
@@ -33,7 +35,7 @@ export default function DiagnosticPage() {
 
       // Test 2: Auth endpoints
       addResult('Auth System', 'success', 'Testing auth...')
-      const authResponse = await fetch('http://localhost:5000/api/auth/signup', {
+      const authResponse = await fetch(`${apiUrl}/api/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: `test-${Date.now()}@test.com`, password: 'test123' })
