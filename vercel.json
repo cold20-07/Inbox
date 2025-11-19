@@ -13,8 +13,5 @@
     "api/**/*.ts": {
       "runtime": "nodejs20.x"
     }
-  },
-  "env": {
-    "GEMINI_API_KEY": "@gemini_api_key"
   }
 }
