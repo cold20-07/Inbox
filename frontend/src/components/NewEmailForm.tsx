@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { X, Zap } from 'lucide-react'
-import { useCustomAuth } from '../hooks/useCustomAuth'
+// import { useCustomAuth } from '../hooks/useCustomAuth'
 
 interface NewEmailFormProps {
   onClose: () => void
@@ -18,7 +18,7 @@ interface AnalysisResult {
 }
 
 export default function NewEmailForm({ onClose }: NewEmailFormProps) {
-  const { token } = useCustomAuth()
+  // const { token } = useCustomAuth()
   const [sender, setSender] = useState('')
   const [subject, setSubject] = useState('')
   const [body, setBody] = useState('')
@@ -33,17 +33,17 @@ export default function NewEmailForm({ onClose }: NewEmailFormProps) {
       const headers: Record<string, string> = {
         'Content-Type': 'application/json'
       }
-      
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`
-      }
+
+      // if (token) {
+      //   headers['Authorization'] = `Bearer ${token}`
+      // }
 
       // Use relative URL in production (same domain), absolute in development
-      const apiUrl = import.meta.env.VITE_API_URL 
+      const apiUrl = import.meta.env.VITE_API_URL
         ? import.meta.env.VITE_API_URL
         : import.meta.env.PROD
-        ? ''
-        : 'http://localhost:5000'
+          ? ''
+          : 'http://localhost:5000'
       const response = await fetch(`${apiUrl}/api/emails/analyze`, {
         method: 'POST',
         headers,
@@ -51,7 +51,7 @@ export default function NewEmailForm({ onClose }: NewEmailFormProps) {
       })
 
       const data = await response.json()
-      
+
       if (!response.ok) throw new Error(data.error)
 
       setResult(data)
@@ -71,8 +71,8 @@ export default function NewEmailForm({ onClose }: NewEmailFormProps) {
             <h3 className="text-4xl font-display mb-2">{result.subject}</h3>
             <p className="text-xl font-body text-gray-600">From: {result.senderName || result.senderEmail}</p>
           </div>
-          <button 
-            onClick={onClose} 
+          <button
+            onClick={onClose}
             className="p-2 hover:bg-chaos hover:text-white border-4 border-black transition-colors"
           >
             <X className="w-8 h-8" strokeWidth={3} />
@@ -122,7 +122,7 @@ export default function NewEmailForm({ onClose }: NewEmailFormProps) {
             </div>
           )}
 
-          <button 
+          <button
             onClick={() => {
               setResult(null)
               setSender('')
@@ -145,8 +145,8 @@ export default function NewEmailForm({ onClose }: NewEmailFormProps) {
     <div className="bg-white border-8 border-black p-8 shadow-brutal-color">
       <div className="flex justify-between items-center mb-8">
         <h3 className="text-4xl font-display">PASTE EMAIL</h3>
-        <button 
-          onClick={onClose} 
+        <button
+          onClick={onClose}
           className="p-2 hover:bg-chaos hover:text-white border-4 border-black transition-colors"
         >
           <X className="w-8 h-8" strokeWidth={3} />
