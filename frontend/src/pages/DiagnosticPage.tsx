@@ -25,26 +25,36 @@ export default function DiagnosticPage() {
     const apiUrl = import.meta.env.VITE_API_URL || 
       (import.meta.env.PROD ? '' : 'http://localhost:5000')
 
+    // Test 1: Backend connection
     try {
-      // Test 1: Backend connection
       addResult('Backend API', 'success', 'Testing connection...')
       const response = await fetch(apiUrl)
       if (response.ok) {
         addResult('Backend API', 'success', 'Backend is running!')
       } else {
-        addResult('Backend API', 'error', 'Backend not responding')
+        addResult('Backend API', 'error', `Backend returned ${response.status}`)
       }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error'
+      addResult('Backend API', 'error', `Connection failed: ${message}`)
+    }
 
-      // Test 2: Health endpoint
+    // Test 2: Health endpoint
+    try {
       addResult('Health Check', 'success', 'Testing health endpoint...')
       const healthResponse = await fetch(`${apiUrl}/api/health`)
       if (healthResponse.ok) {
         addResult('Health Check', 'success', 'API health check passed!')
       } else {
-        addResult('Health Check', 'error', 'Health check failed')
+        addResult('Health Check', 'error', `Health check returned ${healthResponse.status}`)
       }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error'
+      addResult('Health Check', 'error', `Health check failed: ${message}`)
+    }
 
-      // Test 3: Email analysis endpoint
+    // Test 3: Email analysis endpoint
+    try {
       addResult('Email Analysis', 'success', 'Testing AI analysis...')
       const testResponse = await fetch(`${apiUrl}/api/emails/analyze`, {
         method: 'POST',
@@ -56,17 +66,21 @@ export default function DiagnosticPage() {
       })
 
       if (testResponse.ok) {
-        addResult('Email Analysis', 'success', 'AI analysis working!')
+        const data = await testResponse.json()
+        if (data.category && data.summary) {
+          addResult('Email Analysis', 'success', 'AI analysis working!')
+        } else {
+          addResult('Email Analysis', 'error', 'Invalid response format')
+        }
       } else {
-        addResult('Email Analysis', 'error', 'AI analysis failed')
+        addResult('Email Analysis', 'error', `Analysis returned ${testResponse.status}`)
       }
-
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown error'
-      addResult('System Error', 'error', message)
-    } finally {
-      setLoading(false)
+      addResult('Email Analysis', 'error', `Analysis failed: ${message}`)
     }
+
+    setLoading(false)
   }
 
   return (

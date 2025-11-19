@@ -36,17 +36,46 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
+    // Validate request body
+    if (!req.body) {
+      return res.status(400).json({ error: 'Request body is required' });
+    }
+
     const { sender, subject, body } = req.body;
 
+    // Validate required fields
     if (!subject || !body) {
       return res.status(400).json({ error: 'Subject and body are required' });
     }
 
+    // Validate types
+    if (typeof subject !== 'string' || typeof body !== 'string') {
+      return res.status(400).json({ error: 'Subject and body must be strings' });
+    }
+
+    if (sender && typeof sender !== 'string') {
+      return res.status(400).json({ error: 'Sender must be a string' });
+    }
+
+    // Validate lengths
+    if (subject.length > 200) {
+      return res.status(400).json({ error: 'Subject must be less than 200 characters' });
+    }
+
+    if (body.length > 10000) {
+      return res.status(400).json({ error: 'Body must be less than 10,000 characters' });
+    }
+
+    // Sanitize inputs
+    const sanitizedSender = sender ? String(sender).trim() : 'Unknown';
+    const sanitizedSubject = String(subject).trim();
+    const sanitizedBody = String(body).trim();
+
     const prompt = `Analyze this email and respond ONLY with a valid JSON object (no markdown, no extra text):
 
-From: ${sender || 'Unknown'}
-Subject: ${subject}
-Body: ${body.substring(0, 2000)}
+From: ${sanitizedSender}
+Subject: ${sanitizedSubject}
+Body: ${sanitizedBody.substring(0, 10000)}
 
 Return a JSON object with this exact structure:
 {
@@ -79,27 +108,35 @@ Respond with ONLY the JSON object, nothing else.`;
     
     const analysis = JSON.parse(jsonMatch[0]);
 
+    // Validate analysis response
+    if (!analysis || typeof analysis !== 'object') {
+      throw new Error('Invalid analysis response');
+    }
+
     return res.json({
-      subject,
-      senderEmail: sender || 'unknown@example.com',
-      senderName: sender,
-      category: analysis.category,
-      priorityScore: analysis.priorityScore,
-      summary: analysis.summary,
-      keyPoints: analysis.keyPoints,
-      actionItems: analysis.actionItems || []
+      subject: sanitizedSubject,
+      senderEmail: sanitizedSender === 'Unknown' ? 'unknown@example.com' : sanitizedSender,
+      senderName: sanitizedSender,
+      category: String(analysis.category || 'other'),
+      priorityScore: Number(analysis.priorityScore) || 50,
+      summary: String(analysis.summary || 'No summary available'),
+      keyPoints: Array.isArray(analysis.keyPoints) ? analysis.keyPoints : [],
+      actionItems: Array.isArray(analysis.actionItems) ? analysis.actionItems : []
     });
   } catch (error) {
     console.error('Analyze error:', error);
     
-    // Return fallback response
+    // Return fallback response with safe defaults
+    const fallbackSubject = req.body?.subject ? String(req.body.subject).substring(0, 200) : 'Unknown';
+    const fallbackSender = req.body?.sender ? String(req.body.sender).substring(0, 100) : 'Unknown';
+    
     return res.json({
-      subject: req.body.subject,
-      senderEmail: req.body.sender || 'unknown@example.com',
-      senderName: req.body.sender,
+      subject: fallbackSubject,
+      senderEmail: fallbackSender === 'Unknown' ? 'unknown@example.com' : fallbackSender,
+      senderName: fallbackSender,
       category: 'other',
       priorityScore: 50,
-      summary: `Email from ${req.body.sender || 'Unknown'}: ${req.body.subject}`,
+      summary: `Email from ${fallbackSender}: ${fallbackSubject}`,
       keyPoints: ['Email analysis unavailable', 'Please check API configuration'],
       actionItems: []
     });
