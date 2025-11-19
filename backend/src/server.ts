@@ -6,7 +6,7 @@ import express from 'express'
 import cors from 'cors'
 import { createClient } from '@supabase/supabase-js'
 import analyzeRoutes from './routes/analyze.routes.js'
-import authRoutes from './routes/auth.routes.js'
+// import authRoutes from './routes/auth.routes.js'
 
 const app = express()
 const PORT = process.env.PORT || 5000
@@ -37,7 +37,7 @@ app.use(express.json())
 
 // Routes
 app.get('/', (req, res) => {
-  res.json({ 
+  res.json({
     name: 'Inbox Unclutter API',
     version: '2.0.0',
     status: 'running',
@@ -53,7 +53,7 @@ app.get('/', (req, res) => {
   })
 })
 
-app.use('/api/auth', authRoutes)
+// app.use('/api/auth', authRoutes) // Auth disabled
 app.use('/api/emails', analyzeRoutes)
 
 app.get('/api/health', (req, res) => {
@@ -63,7 +63,7 @@ app.get('/api/health', (req, res) => {
 // Error handling middleware
 app.use((err: Error, req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error('Server error:', err)
-  res.status(500).json({ 
+  res.status(500).json({
     error: 'Internal server error',
     message: process.env.NODE_ENV === 'development' ? err.message : undefined
   })

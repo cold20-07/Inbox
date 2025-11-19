@@ -1,35 +1,20 @@
 import { Router } from 'express'
-import jwt from 'jsonwebtoken'
 import { analyzeEmail } from '../services/gemini.service.js'
 import { supabase } from '../server.js'
 
 const router = Router()
 
-if (!process.env.JWT_SECRET) {
-  console.warn('⚠️ WARNING: JWT_SECRET not set in environment variables. Using default (insecure for production).')
-}
-
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production'
-
 router.post('/analyze', async (req, res) => {
   try {
     const { sender, subject, body } = req.body
-    const token = req.headers.authorization?.replace('Bearer ', '')
+
 
     if (!subject || !body) {
       return res.status(400).json({ error: 'Subject and body are required' })
     }
 
-    // Get user ID from token (optional - works without auth too)
-    let userId = 'anonymous'
-    if (token) {
-      try {
-        const decoded = jwt.verify(token, JWT_SECRET) as { userId: string }
-        userId = decoded.userId
-      } catch (error) {
-        console.log('Invalid token, using anonymous')
-      }
-    }
+    // User ID is always anonymous now
+    const userId = 'anonymous'
 
     // Analyze with Gemini
     const analysis = await analyzeEmail(sender || 'Unknown', subject, body)
@@ -52,7 +37,7 @@ router.post('/analyze', async (req, res) => {
             key_points: analysis.keyPoints,
             action_items: analysis.actionItems
           })
-        
+
         console.log('✅ Saved to database')
       } catch (dbError) {
         console.log('⚠️ Could not save to database, but analysis succeeded:', dbError)
@@ -74,7 +59,7 @@ router.post('/analyze', async (req, res) => {
     })
   } catch (error) {
     console.error('Analyze error:', error)
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Failed to analyze email',
       details: error instanceof Error ? error.message : 'Unknown error'
     })

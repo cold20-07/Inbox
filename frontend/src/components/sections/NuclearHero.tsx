@@ -11,12 +11,12 @@ export default function NuclearHero() {
   }, []);
 
   return (
-    <div 
+    <div
       ref={heroRef}
       className="relative min-h-screen overflow-hidden bg-black"
     >
       {/* Grain texture overlay */}
-      <div 
+      <div
         className="absolute inset-0 opacity-[0.08] mix-blend-overlay pointer-events-none animate-grain"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='4' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' /%3E%3C/svg%3E")`,
@@ -26,15 +26,15 @@ export default function NuclearHero() {
 
       {/* Chaotic background shapes */}
       <div className="absolute inset-0 overflow-hidden">
-        <div 
+        <div
           className="absolute top-20 -right-40 w-96 h-96 bg-hotpink rotate-12"
           style={{ transform: `translateY(${scrollY * 0.3}px) rotate(12deg)` }}
         />
-        <div 
+        <div
           className="absolute bottom-40 -left-20 w-80 h-80 bg-electric rotate-45"
           style={{ transform: `translateY(${scrollY * 0.5}px) rotate(45deg)` }}
         />
-        <div 
+        <div
           className="absolute top-1/2 right-1/4 w-64 h-64 bg-lime -rotate-12"
           style={{ transform: `translateY(${scrollY * 0.4}px) rotate(-12deg)` }}
         />
@@ -49,13 +49,13 @@ export default function NuclearHero() {
             <span className="block text-white">is </span>
             <span className="block text-chaos">chaos</span>
           </h1>
-          
+
           <p className="mt-8 md:mt-12 text-lg sm:text-2xl md:text-4xl text-white/80 font-body max-w-2xl">
             847 hours saved. Zero bullshit. Pure email domination.
           </p>
 
           {/* HUGE CTA button */}
-          <a href="/auth">
+          <a href="/dashboard">
             <button className="mt-12 md:mt-16 group relative cursor-pointer">
               <div className="absolute inset-0 bg-hotpink translate-x-2 translate-y-2 transition-transform group-hover:translate-x-1 group-hover:translate-y-1" />
               <div className="relative bg-white px-8 py-6 md:px-12 md:py-8 text-xl md:text-2xl lg:text-3xl font-display border-4 border-black transition-transform group-hover:scale-[1.02] group-active:scale-95">
@@ -66,9 +66,9 @@ export default function NuclearHero() {
         </div>
 
         {/* Email mockup - breaking container (hidden on mobile) */}
-        <div 
+        <div
           className="hidden lg:block absolute right-0 top-1/4 w-[600px] rotate-3"
-          style={{ 
+          style={{
             transform: `translateY(${scrollY * 0.2}px) rotate(3deg)`,
             right: '-100px'
           }}

@@ -1,12 +1,11 @@
-import { Plus, Settings as SettingsIcon, LogOut, Zap } from 'lucide-react'
+import { Plus, Settings as SettingsIcon, Zap } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { useCustomAuth } from '../hooks/useCustomAuth'
 import { useState } from 'react'
 
 import NewEmailForm from '../components/NewEmailForm'
 
 export default function Dashboard() {
-  const { user, signOut } = useCustomAuth()
+  // const { user, signOut } = useCustomAuth()
   const [showNewEmail, setShowNewEmail] = useState(false)
 
   return (
@@ -17,12 +16,8 @@ export default function Dashboard() {
           <Link to="/" className="text-5xl font-display hover:animate-glitch">
             INBOX
           </Link>
-          
+
           <div className="flex items-center gap-4">
-            <div className="px-6 py-3 bg-lime border-4 border-black font-display text-xl">
-              {user?.email}
-            </div>
-            
             <Link to="/settings">
               <button className="group relative">
                 <div className="absolute inset-0 bg-electric translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5" />
@@ -32,14 +27,6 @@ export default function Dashboard() {
                 </div>
               </button>
             </Link>
-            
-            <button onClick={signOut} className="group relative">
-              <div className="absolute inset-0 bg-chaos translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5" />
-              <div className="relative bg-white px-6 py-3 border-4 border-black font-display text-xl flex items-center gap-2">
-                <LogOut className="w-5 h-5" />
-                OUT
-              </div>
-            </button>
           </div>
         </div>
       </div>
@@ -67,7 +54,7 @@ export default function Dashboard() {
             <p className="text-3xl font-display text-white mb-8">
               NO EMAILS YET
             </p>
-            <button 
+            <button
               onClick={() => setShowNewEmail(true)}
               className="group relative"
             >
