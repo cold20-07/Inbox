@@ -12,18 +12,13 @@
     "dev:frontend": "npm run dev --workspace=frontend",
     "dev:backend": "npm run dev --workspace=backend",
     "build": "npm run build --workspaces",
-    "install:all": "npm install && npm install --workspaces",
-    "vercel-build": "npm install --prefix frontend && cd frontend && npm run build"
+    "install:all": "npm install && npm install --workspaces"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
-    "@vercel/node": "^3.0.0",
-    "bcryptjs": "^3.0.3",
-    "jsonwebtoken": "^9.0.2"
+    "@vercel/node": "^3.0.0"
   },
   "devDependencies": {
-    "@types/bcryptjs": "^2.4.6",
-    "@types/jsonwebtoken": "^9.0.10",
     "concurrently": "^8.2.2"
   }
 }
