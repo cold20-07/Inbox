@@ -4,12 +4,26 @@ dotenv.config()
 
 import express from 'express'
 import cors from 'cors'
+import helmet from 'helmet'
+import rateLimit from 'express-rate-limit'
 import { createClient } from '@supabase/supabase-js'
 import analyzeRoutes from './routes/analyze.routes.js'
-// import authRoutes from './routes/auth.routes.js'
 
 const app = express()
 const PORT = process.env.PORT || 5000
+
+// Security Headers
+app.use(helmet())
+
+// Rate Limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: 'Too many requests from this IP, please try again later.'
+})
+app.use(limiter)
 
 // Validate required environment variables
 const requiredEnvVars = ['GEMINI_API_KEY']
@@ -41,12 +55,9 @@ app.get('/', (req, res) => {
     name: 'Inbox Unclutter API',
     version: '2.0.0',
     status: 'running',
-    auth: 'JWT-based',
+    auth: 'None (Public)',
     endpoints: {
       health: '/api/health',
-      signup: 'POST /api/auth/signup',
-      signin: 'POST /api/auth/signin',
-      me: 'GET /api/auth/me',
       analyzeEmail: 'POST /api/emails/analyze'
     },
     documentation: 'See README.md for API documentation'

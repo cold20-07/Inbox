@@ -22,11 +22,11 @@ export default function DiagnosticPage() {
     setLoading(true)
 
     // Use relative URL in production (same domain), absolute in development
-    const apiUrl = import.meta.env.VITE_API_URL 
+    const apiUrl = import.meta.env.VITE_API_URL
       ? import.meta.env.VITE_API_URL
       : import.meta.env.PROD
-      ? ''
-      : 'http://localhost:5000'
+        ? ''
+        : ''
 
     try {
       // Test 1: Backend connection
@@ -45,7 +45,7 @@ export default function DiagnosticPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: `test-${Date.now()}@test.com`, password: 'test123' })
       })
-      
+
       if (authResponse.ok) {
         addResult('Auth System', 'success', 'JWT authentication working!')
       } else {
@@ -94,9 +94,8 @@ export default function DiagnosticPage() {
           {results.map((result, index) => (
             <div
               key={index}
-              className={`bg-white border-8 border-black p-6 ${
-                result.status === 'success' ? 'shadow-brutal' : 'shadow-brutal-color'
-              }`}
+              className={`bg-white border-8 border-black p-6 ${result.status === 'success' ? 'shadow-brutal' : 'shadow-brutal-color'
+                }`}
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
