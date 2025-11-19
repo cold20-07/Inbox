@@ -22,11 +22,8 @@ export default function DiagnosticPage() {
     setLoading(true)
 
     // Use relative URL in production (same domain), absolute in development
-    const apiUrl = import.meta.env.VITE_API_URL
-      ? import.meta.env.VITE_API_URL
-      : import.meta.env.PROD
-        ? ''
-        : ''
+    const apiUrl = import.meta.env.VITE_API_URL || 
+      (import.meta.env.PROD ? '' : 'http://localhost:5000')
 
     try {
       // Test 1: Backend connection
@@ -38,22 +35,31 @@ export default function DiagnosticPage() {
         addResult('Backend API', 'error', 'Backend not responding')
       }
 
-      // Test 2: Auth endpoints
-      addResult('Auth System', 'success', 'Testing auth...')
-      const authResponse = await fetch(`${apiUrl}/api/auth/signup`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: `test-${Date.now()}@test.com`, password: 'test123' })
-      })
-
-      if (authResponse.ok) {
-        addResult('Auth System', 'success', 'JWT authentication working!')
+      // Test 2: Health endpoint
+      addResult('Health Check', 'success', 'Testing health endpoint...')
+      const healthResponse = await fetch(`${apiUrl}/api/health`)
+      if (healthResponse.ok) {
+        addResult('Health Check', 'success', 'API health check passed!')
       } else {
-        addResult('Auth System', 'error', 'Auth system failed')
+        addResult('Health Check', 'error', 'Health check failed')
       }
 
-      // Test 3: Gemini AI
-      addResult('Gemini AI', 'success', 'AI analysis ready!')
+      // Test 3: Email analysis endpoint
+      addResult('Email Analysis', 'success', 'Testing AI analysis...')
+      const testResponse = await fetch(`${apiUrl}/api/emails/analyze`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          subject: 'Test Email', 
+          body: 'This is a test email for diagnostics.' 
+        })
+      })
+
+      if (testResponse.ok) {
+        addResult('Email Analysis', 'success', 'AI analysis working!')
+      } else {
+        addResult('Email Analysis', 'error', 'AI analysis failed')
+      }
 
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown error'

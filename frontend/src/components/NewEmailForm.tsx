@@ -39,11 +39,8 @@ export default function NewEmailForm({ onClose }: NewEmailFormProps) {
       // }
 
       // Use relative URL in production (same domain), absolute in development
-      const apiUrl = import.meta.env.VITE_API_URL
-        ? import.meta.env.VITE_API_URL
-        : import.meta.env.PROD
-          ? ''
-          : ''
+      const apiUrl = import.meta.env.VITE_API_URL || 
+        (import.meta.env.PROD ? '' : 'http://localhost:5000')
       const response = await fetch(`${apiUrl}/api/emails/analyze`, {
         method: 'POST',
         headers,
