@@ -20,6 +20,7 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/diagnostics" element={<DiagnosticPage />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="*" element={<NuclearLanding />} />
             </Routes>
           </BrowserRouter>
         </ToastProvider>
