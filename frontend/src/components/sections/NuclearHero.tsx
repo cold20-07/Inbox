@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function NuclearHero() {
   const [scrollY, setScrollY] = useState(0);
@@ -55,14 +56,14 @@ export default function NuclearHero() {
           </p>
 
           {/* HUGE CTA button */}
-          <a href="/dashboard?action=analyze">
+          <Link to="/dashboard?action=analyze">
             <button className="mt-12 md:mt-16 group relative cursor-pointer">
               <div className="absolute inset-0 bg-hotpink translate-x-2 translate-y-2 transition-transform group-hover:translate-x-1 group-hover:translate-y-1" />
               <div className="relative bg-white px-8 py-6 md:px-12 md:py-8 text-xl md:text-2xl lg:text-3xl font-display border-4 border-black transition-transform group-hover:scale-[1.02] group-active:scale-95">
                 Fix my inbox now →
               </div>
             </button>
-          </a>
+          </Link>
         </div>
 
         {/* Email mockup - breaking container (hidden on mobile) */}
