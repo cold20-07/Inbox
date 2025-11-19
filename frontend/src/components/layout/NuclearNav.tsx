@@ -53,7 +53,7 @@ export default function NuclearNav() {
 
 
           {/* CTA */}
-          <Link to="/dashboard">
+          <Link to="/dashboard?action=analyze">
             <button className="group relative">
               <div className={`absolute inset-0 ${scrolled ? 'bg-hotpink' : 'bg-white'} translate-x-1 translate-y-1 transition-all group-hover:translate-x-0.5 group-hover:translate-y-0.5`} />
               <div className={`relative ${scrolled ? 'bg-white text-black' : 'bg-black text-white'} px-4 py-2 md:px-6 md:py-3 text-base md:text-lg font-display border-2 border-black transition-all group-hover:scale-105 group-active:scale-95`}>

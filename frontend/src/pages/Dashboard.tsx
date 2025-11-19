@@ -1,18 +1,27 @@
 import { Plus, Settings as SettingsIcon, Zap } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 
 import NewEmailForm from '../components/NewEmailForm'
 
 export default function Dashboard() {
+  const [searchParams, setSearchParams] = useSearchParams()
   const [showNewEmail, setShowNewEmail] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     // Simulate initial load
-    const timer = setTimeout(() => setIsLoading(false), 300)
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+      // Check if we should auto-open the form
+      if (searchParams.get('action') === 'analyze') {
+        setShowNewEmail(true)
+        // Remove the query parameter
+        setSearchParams({})
+      }
+    }, 300)
     return () => clearTimeout(timer)
-  }, [])
+  }, [searchParams, setSearchParams])
 
   return (
     <div className="min-h-screen bg-black">
