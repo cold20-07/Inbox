@@ -2,15 +2,15 @@ import { GoogleGenerativeAI } from '@google/generative-ai'
 
 function getModel() {
   const apiKey = process.env.GEMINI_API_KEY?.trim()
-  
+
   if (!apiKey) {
     throw new Error('GEMINI_API_KEY is not set in environment variables')
   }
-  
+
   const genAI = new GoogleGenerativeAI(apiKey)
-  
+
   // Use Gemini 2.5 Flash - fast and efficient for email analysis
-  return genAI.getGenerativeModel({ 
+  return genAI.getGenerativeModel({
     model: 'gemini-2.5-flash',
     generationConfig: {
       temperature: 0.3,
@@ -31,17 +31,21 @@ export interface EmailAnalysis {
 
 // Validation function
 function isValidEmailAnalysis(obj: unknown): obj is EmailAnalysis {
+  if (typeof obj !== 'object' || obj === null) {
+    return false
+  }
+
+  const record = obj as Record<string, unknown>
+
   return (
-    typeof obj === 'object' &&
-    obj !== null &&
-    typeof obj.category === 'string' &&
-    typeof obj.priorityScore === 'number' &&
-    obj.priorityScore >= 0 &&
-    obj.priorityScore <= 100 &&
-    typeof obj.summary === 'string' &&
-    Array.isArray(obj.keyPoints) &&
-    obj.keyPoints.length > 0 &&
-    (obj.actionItems === undefined || Array.isArray(obj.actionItems))
+    typeof record.category === 'string' &&
+    typeof record.priorityScore === 'number' &&
+    record.priorityScore >= 0 &&
+    record.priorityScore <= 100 &&
+    typeof record.summary === 'string' &&
+    Array.isArray(record.keyPoints) &&
+    record.keyPoints.length > 0 &&
+    (record.actionItems === undefined || Array.isArray(record.actionItems))
   )
 }
 
@@ -49,13 +53,13 @@ function isValidEmailAnalysis(obj: unknown): obj is EmailAnalysis {
 function extractJSON(text: string): unknown {
   // Remove markdown code blocks if present
   const cleanText = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
-  
+
   // Try to find JSON object
   const jsonMatch = cleanText.match(/\{[\s\S]*\}/)
   if (!jsonMatch) {
     throw new Error('No JSON object found in response')
   }
-  
+
   return JSON.parse(jsonMatch[0])
 }
 
@@ -85,41 +89,41 @@ Respond with ONLY the JSON object, nothing else.`
   try {
     console.log('🤖 Calling Gemini API...')
     console.log('📧 Analyzing email from:', sender)
-    
+
     const model = getModel()
     const result = await model.generateContent(prompt)
     const response = result.response
-    
+
     // Check if response is blocked
     if (!response || response.candidates?.[0]?.finishReason === 'SAFETY') {
       throw new Error('Response blocked by safety filters')
     }
-    
+
     const text = response.text()
     console.log('✅ Gemini API response received')
     console.log('📝 Response preview:', text.substring(0, 200))
-    
+
     // Parse and validate JSON
     const parsed = extractJSON(text)
-    
+
     if (!isValidEmailAnalysis(parsed)) {
       console.warn('⚠️ Invalid response structure, using fallback')
       throw new Error('Invalid response structure')
     }
-    
+
     console.log('✅ Successfully parsed and validated AI response')
     return parsed
-    
+
   } catch (error) {
     console.error('❌ Gemini API error:', error)
-    
+
     // Log detailed error information
     if (error instanceof Error) {
       console.error('Error name:', error.name)
       console.error('Error message:', error.message)
       console.error('Error stack:', error.stack)
     }
-    
+
     // Check for specific error types
     if (error instanceof Error) {
       if (error.message.includes('API key')) {
@@ -130,7 +134,7 @@ Respond with ONLY the JSON object, nothing else.`
         console.error('🌐 Network error - check your internet connection')
       }
     }
-    
+
     // Return fallback response
     return {
       category: 'other',
@@ -156,7 +160,7 @@ export async function generateDigest(emails: EmailForDigest[]): Promise<string> 
 
   const emailSummaries = emails
     .slice(0, 50) // Limit to prevent token overflow
-    .map(e => 
+    .map(e =>
       `- ${e.sender_name || e.sender_email}: ${e.subject} (${e.category})`
     )
     .join('\n')
@@ -170,36 +174,36 @@ Respond with plain text, no markdown or formatting.`
 
   try {
     console.log('🤖 Generating digest for', emails.length, 'emails')
-    
+
     const model = getModel()
     const result = await model.generateContent(prompt)
     const response = result.response
-    
+
     if (!response || response.candidates?.[0]?.finishReason === 'SAFETY') {
       throw new Error('Response blocked by safety filters')
     }
-    
+
     const text = response.text()
     console.log('✅ Digest generated successfully')
     return text
-    
+
   } catch (error) {
     console.error('❌ Gemini API error in digest generation:', error)
-    
+
     if (error instanceof Error) {
       console.error('Error message:', error.message)
     }
-    
+
     // Fallback digest
     const categoryCount = emails.reduce((acc, e) => {
       acc[e.category] = (acc[e.category] || 0) + 1
       return acc
     }, {} as Record<string, number>)
-    
+
     const categorySummary = Object.entries(categoryCount)
       .map(([cat, count]) => `${count} ${cat}`)
       .join(', ')
-    
+
     return `You received ${emails.length} emails today: ${categorySummary}. Check your dashboard for details.`
   }
 }

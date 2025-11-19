@@ -21,7 +21,12 @@ export default function DiagnosticPage() {
     setResults([])
     setLoading(true)
 
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+    // Use relative URL in production (same domain), absolute in development
+    const apiUrl = import.meta.env.VITE_API_URL 
+      ? import.meta.env.VITE_API_URL
+      : import.meta.env.PROD
+      ? ''
+      : 'http://localhost:5000'
 
     try {
       // Test 1: Backend connection

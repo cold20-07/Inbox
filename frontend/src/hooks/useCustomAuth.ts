@@ -6,8 +6,11 @@ interface User {
   createdAt: string
 }
 
+// Use relative URL in production (same domain), absolute in development
 const API_URL = import.meta.env.VITE_API_URL 
   ? `${import.meta.env.VITE_API_URL}/api/auth`
+  : import.meta.env.PROD
+  ? '/api/auth'
   : 'http://localhost:5000/api/auth'
 
 export function useCustomAuth() {
