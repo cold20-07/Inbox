@@ -19,7 +19,7 @@ export default function Dashboard() {
       {/* Top Bar */}
       <div className="bg-white border-b-8 border-black p-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link to="/" className="text-5xl font-display hover:animate-glitch">
+          <Link to="/dashboard" className="text-5xl font-display hover:animate-glitch">
             INBOX
           </Link>
 

@@ -42,7 +42,7 @@ export default function NuclearNav() {
         <div className="container mx-auto px-4 md:px-8 py-4 md:py-6 flex items-center justify-between">
           {/* Logo */}
           <Link
-            to="/"
+            to="/dashboard"
             className="text-2xl md:text-3xl font-display group relative"
           >
             <span className={`${scrolled ? 'text-black' : 'text-white'} group-hover:animate-glitch`}>

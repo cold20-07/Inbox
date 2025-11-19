@@ -88,7 +88,7 @@ export default function DiagnosticPage() {
       {/* Top Bar */}
       <div className="bg-white border-b-8 border-black p-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-4 group">
+          <Link to="/dashboard" className="flex items-center gap-4 group">
             <ArrowLeft className="w-8 h-8 group-hover:text-hotpink transition-colors" strokeWidth={3} />
             <span className="text-5xl font-display group-hover:animate-glitch">
               DIAGNOSTICS
