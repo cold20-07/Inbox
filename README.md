@@ -10,22 +10,6 @@ AI-powered email summarizer using email/password authentication and Google Gemin
 - **Auth**: JWT-based Email/Password
 - **AI**: Google Gemini 2.5 Flash
 
-## 🚀 Deployment
-
-Deploy to Vercel with one click:
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/cold20-07/Inbox)
-
-**What gets deployed:**
-- ✅ React frontend (static files)
-- ✅ API serverless functions (`/api/*`)
-- ✅ Automatic HTTPS and CDN
-
-**Required Environment Variable:**
-- `GEMINI_API_KEY` - Get it free from [ai.google.dev](https://ai.google.dev)
-
-Add the environment variable in Vercel Dashboard → Settings → Environment Variables
-
 ## Quick Start
 
 ### 1. Clone the Repository
