@@ -1,12 +1,18 @@
 import { Plus, Settings as SettingsIcon, Zap } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import NewEmailForm from '../components/NewEmailForm'
 
 export default function Dashboard() {
-  // const { user, signOut } = useCustomAuth()
   const [showNewEmail, setShowNewEmail] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    // Simulate initial load
+    const timer = setTimeout(() => setIsLoading(false), 300)
+    return () => clearTimeout(timer)
+  }, [])
 
   return (
     <div className="min-h-screen bg-black">
@@ -44,7 +50,14 @@ export default function Dashboard() {
           </p>
         </div>
 
-        {showNewEmail ? (
+        {isLoading ? (
+          <div className="text-center py-20">
+            <div className="inline-block mb-8 animate-pulse">
+              <Zap className="w-32 h-32 text-lime" strokeWidth={3} />
+            </div>
+            <p className="text-3xl font-display text-white">LOADING...</p>
+          </div>
+        ) : showNewEmail ? (
           <NewEmailForm onClose={() => setShowNewEmail(false)} />
         ) : (
           <div className="text-center py-20">

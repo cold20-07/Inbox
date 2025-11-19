@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { X, Zap } from 'lucide-react'
-// import { useCustomAuth } from '../hooks/useCustomAuth'
 
 interface NewEmailFormProps {
   onClose: () => void
@@ -17,16 +16,35 @@ interface AnalysisResult {
   actionItems?: string[]
 }
 
+const MAX_SUBJECT_LENGTH = 200
+const MAX_BODY_LENGTH = 10000
+
 export default function NewEmailForm({ onClose }: NewEmailFormProps) {
-  // const { token } = useCustomAuth()
   const [sender, setSender] = useState('')
   const [subject, setSubject] = useState('')
   const [body, setBody] = useState('')
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<AnalysisResult | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setError(null)
+    
+    // Input validation
+    const trimmedSubject = subject.trim()
+    const trimmedBody = body.trim()
+    
+    if (trimmedSubject.length > MAX_SUBJECT_LENGTH) {
+      setError(`Subject must be less than ${MAX_SUBJECT_LENGTH} characters`)
+      return
+    }
+    
+    if (trimmedBody.length > MAX_BODY_LENGTH) {
+      setError(`Email body must be less than ${MAX_BODY_LENGTH} characters`)
+      return
+    }
+    
     setLoading(true)
 
     try {
@@ -34,27 +52,33 @@ export default function NewEmailForm({ onClose }: NewEmailFormProps) {
         'Content-Type': 'application/json'
       }
 
-      // if (token) {
-      //   headers['Authorization'] = `Bearer ${token}`
-      // }
-
-      // Use relative URL in production (same domain), absolute in development
       const apiUrl = import.meta.env.VITE_API_URL || 
         (import.meta.env.PROD ? '' : 'http://localhost:5000')
       const response = await fetch(`${apiUrl}/api/emails/analyze`, {
         method: 'POST',
         headers,
-        body: JSON.stringify({ sender, subject, body })
+        body: JSON.stringify({ 
+          sender: sender.trim(), 
+          subject: trimmedSubject, 
+          body: trimmedBody 
+        })
       })
 
       const data = await response.json()
 
-      if (!response.ok) throw new Error(data.error)
+      if (!response.ok) {
+        // Handle rate limiting
+        if (response.status === 429) {
+          throw new Error('Too many requests. Please wait a moment and try again.')
+        }
+        throw new Error(data.error || 'Failed to analyze email')
+      }
 
       setResult(data)
     } catch (error) {
       console.error('Error analyzing email:', error)
-      alert('Failed to analyze email')
+      const errorMessage = error instanceof Error ? error.message : 'Failed to analyze email. Please try again.'
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }
@@ -151,6 +175,12 @@ export default function NewEmailForm({ onClose }: NewEmailFormProps) {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
+        {error && (
+          <div className="bg-chaos/10 border-4 border-chaos p-4">
+            <p className="text-chaos font-display text-lg">{error}</p>
+          </div>
+        )}
+        
         <div>
           <label className="block text-xl font-display mb-3">
             FROM (OPTIONAL)
@@ -160,13 +190,14 @@ export default function NewEmailForm({ onClose }: NewEmailFormProps) {
             value={sender}
             onChange={(e) => setSender(e.target.value)}
             placeholder="sender@example.com"
+            maxLength={100}
             className="w-full px-6 py-4 border-4 border-black text-xl font-body focus:outline-none focus:border-hotpink transition-colors"
           />
         </div>
 
         <div>
           <label className="block text-xl font-display mb-3">
-            SUBJECT
+            SUBJECT {subject.length > 0 && `(${subject.length}/${MAX_SUBJECT_LENGTH})`}
           </label>
           <input
             type="text"
@@ -174,19 +205,21 @@ export default function NewEmailForm({ onClose }: NewEmailFormProps) {
             onChange={(e) => setSubject(e.target.value)}
             placeholder="Email subject"
             required
+            maxLength={MAX_SUBJECT_LENGTH}
             className="w-full px-6 py-4 border-4 border-black text-xl font-body focus:outline-none focus:border-hotpink transition-colors"
           />
         </div>
 
         <div>
           <label className="block text-xl font-display mb-3">
-            EMAIL BODY
+            EMAIL BODY {body.length > 0 && `(${body.length}/${MAX_BODY_LENGTH})`}
           </label>
           <textarea
             value={body}
             onChange={(e) => setBody(e.target.value)}
             placeholder="Paste the email content here..."
             required
+            maxLength={MAX_BODY_LENGTH}
             rows={12}
             className="w-full px-6 py-4 border-4 border-black text-xl font-body focus:outline-none focus:border-hotpink transition-colors resize-none"
           />
